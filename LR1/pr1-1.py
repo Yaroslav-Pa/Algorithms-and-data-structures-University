@@ -126,7 +126,7 @@ class PriorityQueue:
         print()
 
 
-def binary_heap_sort(arr):
+def heap_sort(arr):
     priority_queue = PriorityQueue()
     for item in arr:
         priority_queue.insert(item)
@@ -159,12 +159,13 @@ if __name__ == "__main__":
         priority_queue.insert(item)
     priority_queue.display()
     sorted_arr = priority_queue.sort()
-    print("Sorted Array (Heap sort):", sorted_arr)
+    print("Sorted Array:", sorted_arr)
     unsorted_arr = [4, 8, 2, 6, 7, 1]
     priority_queue.build_heap(unsorted_arr)
+    print("Sorted Array:")
     priority_queue.display()
 
-    print("\n Binary Heap sort")
+    print("\nSort:")
     arr2 = [7, 3, 1, 5, 9, 2]
-    sorted_arr = binary_heap_sort(arr2)
+    sorted_arr = heap_sort(arr2)
     print(sorted_arr)
