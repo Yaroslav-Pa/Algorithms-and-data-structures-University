@@ -43,19 +43,19 @@ def heapify(arr, n, i):
     left = 2 * i + 1
     right = 2 * i + 2
 
-    if left < n and (calculate_age(arr[i]["дата народження"]) < calculate_age(arr[left]["дата народження"]) or
-                     (calculate_age(arr[i]["дата народження"]) == calculate_age(arr[left]["дата народження"]) and arr[i]["стаж"] < arr[left]["стаж"])):
+    if left < n and (calculateAge(arr[i]["дата народження"]) < calculateAge(arr[left]["дата народження"]) or
+                     (calculateAge(arr[i]["дата народження"]) == calculateAge(arr[left]["дата народження"]) and arr[i]["стаж"] < arr[left]["стаж"])):
         largest = left
 
-    if right < n and (calculate_age(arr[largest]["дата народження"]) < calculate_age(arr[right]["дата народження"]) or
-                      (calculate_age(arr[largest]["дата народження"]) == calculate_age(arr[right]["дата народження"]) and arr[largest]["стаж"] < arr[right]["стаж"])):
+    if right < n and (calculateAge(arr[largest]["дата народження"]) < calculateAge(arr[right]["дата народження"]) or
+                      (calculateAge(arr[largest]["дата народження"]) == calculateAge(arr[right]["дата народження"]) and arr[largest]["стаж"] < arr[right]["стаж"])):
         largest = right
 
     if largest != i:
         arr[i], arr[largest] = arr[largest], arr[i]
         heapify(arr, n, largest)
 
-def heap_sort(arr):
+def heapSort(arr):
     n = len(arr)
 
     for i in range(n // 2 - 1, -1, -1):
@@ -65,16 +65,16 @@ def heap_sort(arr):
         arr[i], arr[0] = arr[0], arr[i]
         heapify(arr, i, 0)
 
-def calculate_age(date_of_birth):
+def calculateAge(date_of_birth):
     today = datetime.today()
     birth_date = datetime.strptime(date_of_birth, "%Y-%m-%d")
     age = today.year - birth_date.year
     return age
 
-heap_sort(employees)
+heapSort(employees)
 
 for employee in employees:
-    age = calculate_age(employee["дата народження"])
+    age = calculateAge(employee["дата народження"])
     print(f"{employee['прізвище']} {employee['ім`я']} - {age} років, стаж: {employee['стаж']} років")
 
 
