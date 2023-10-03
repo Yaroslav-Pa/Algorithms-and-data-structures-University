@@ -139,7 +139,6 @@ def binary_heap_sort(arr):
     return sorted_arr
 
 
-# Приклад використання структур даних та пірамідального сортування:
 if __name__ == "__main__":
     print("\nDoubly Linked List:")
     linked_list = DoublyLinkedList()
