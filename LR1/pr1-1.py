@@ -10,26 +10,26 @@ class DoublyLinkedList:
         self.tail = None
 
     def addToBeginning(self, data):
-        new_node = Node(data)
+        newNode = Node(data)
         if self.head is None:
-            self.head = new_node
-            self.tail = new_node
+            self.head = newNode
+            self.tail = newNode
         else:
-            new_node.next = self.head
-            self.head.prev = new_node
-            self.head = new_node
+            newNode.next = self.head
+            self.head.prev = newNode
+            self.head = newNode
 
     def addAfter(self, prevNode, data):
         if prevNode is None:
             return
-        new_node = Node(data)
-        new_node.next = prevNode.next
-        prevNode.next = new_node
-        new_node.prev = prevNode
-        if new_node.next:
-            new_node.next.prev = new_node
+        newNode = Node(data)
+        newNode.next = prevNode.next
+        prevNode.next = newNode
+        newNode.prev = prevNode
+        if newNode.next:
+            newNode.next.prev = newNode
         else:
-            self.tail = new_node
+            self.tail = newNode
 
     def findNode(self, data):
         current = self.head
