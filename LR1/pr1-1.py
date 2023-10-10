@@ -162,7 +162,7 @@ if __name__ == "__main__":
 
     print("\nPriority Queue:")
     priorityQueue = PriorityQueue()
-    arr = [9, 7, 5, 2, 3, 4, 6, 8, 10, 1]
+    arr = [9, 7, 5, 2, 3, 4, 6, 8, 10, 1, 9, 7, 5, 2, 3, 4, 6, 8, 10, 1, 7, 5, 2, 3, 4, 6, 8, 10, 1, 7, 5, 2, 3, 4, 6, 8, 10, 1, 7, 5, 2, 3, 4, 6, 8, 10, 1, 7, 5, 2, 3, 4, 6, 8, 10, 1]
     for item in arr:
         priorityQueue.insert(item)
     priorityQueue.display()
