@@ -1,4 +1,6 @@
-class Node:
+from timeit import default_timer as timer
+
+class Node: # вузол
     def __init__(self, data):
         self.data = data
         self.next = None
@@ -71,7 +73,7 @@ class PriorityQueue:
 
     def insert(self, item):
         self.heap.append(item)
-        self._heapifyUp(len(self.heap) - 1)
+        self.heapifyUp(len(self.heap) - 1)
 
     def remove(self):
         if not self.heap:
@@ -80,10 +82,10 @@ class PriorityQueue:
             return self.heap.pop()
         root = self.heap[0]
         self.heap[0] = self.heap.pop()
-        self._heapifyDown(0)
+        self.heapifyDown(0)
         return root
 
-    def _heapifyUp(self, index):
+    def heapifyUp(self, index):
         while index > 0:
             parentIndex = (index - 1) // 2
             if self.heap[index] < self.heap[parentIndex]:
@@ -92,7 +94,7 @@ class PriorityQueue:
             else:
                 break
 
-    def _heapifyDown(self, index):
+    def heapifyDown(self, index):
         leftChildIndex = 2 * index + 1
         rightChildIndex = 2 * index + 2
         smallest = index
@@ -104,12 +106,12 @@ class PriorityQueue:
 
         if smallest != index:
             self.heap[index], self.heap[smallest] = self.heap[smallest], self.heap[index]
-            self._heapifyDown(smallest)
+            self.heapifyDown(smallest)
 
     def buildHeap(self, arr):
         self.heap = arr
         for i in range(len(arr) // 2, -1, -1):
-            self._heapifyDown(i)
+            self.heapifyDown(i)
 
     def sort(self):
         sortedArr = []
@@ -138,6 +140,12 @@ class PriorityQueue:
 #         sortedArr.append(item)
 #     return sortedArr
 
+def bubbleSort(arr):
+    n = len(arr)
+    for i in range(n - 1):
+        for j in range(0, n - i - 1):
+            if arr[j] > arr[j + 1]:
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
 
 if __name__ == "__main__":
     print("\nDoubly Linked List:")
@@ -154,18 +162,27 @@ if __name__ == "__main__":
 
     print("\nPriority Queue:")
     priorityQueue = PriorityQueue()
-    arr = [9, 7, 5, 2, 10, 1]
+    arr = [9, 7, 5, 2, 3, 4, 6, 8, 10, 1]
     for item in arr:
         priorityQueue.insert(item)
     priorityQueue.display()
     sortedArr = priorityQueue.sort()
     print("Sorted Array:", sortedArr)
-    unsortedArr = [4, 8, 2, 6, 7, 1]
-    priorityQueue.buildHeap(unsortedArr)
-    print("Sorted Array:")
-    priorityQueue.display()
 
+    startTime = timer()
+    priorityQueue.buildHeap(arr)
+    endTime = timer()
+    print("Heap Array:")
+    priorityQueue.display()    
+    
+    startTime1 = timer()
+    bubbleSort(arr)
+    endTime1 = timer()
     # print("\nSort:")
     # arr2 = [7, 3, 1, 5, 9, 2]
     # sortedArr = heapSort(arr2)
     # print(sortedArr)
+
+    print("Time taken (heap):", endTime - startTime, "s")
+    print("Time taken (bubble):", endTime1 - startTime1, "s")
+    
