@@ -107,8 +107,7 @@ def main():
             root = BTree(subscriber)
         else:
             root.insert(subscriber)
-
-    # Змініть символи тут
+    
     custom_symbols = {"vertical": "|", "horizontal": "--", "up_down": "|-", "down": "L"}
     
     root_node = root.toAnytree()

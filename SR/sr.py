@@ -3,6 +3,29 @@ from tkinter import ttk, messagebox
 import subprocess
 import os
 
+
+class TaskInfoWindow(tk.Toplevel):
+    def __init__(self, parent, title, message):
+        super().__init__(parent)
+        self.title(title)
+        self.geometry("500x300")
+        tk.Label(self, text=message, wraplength=480, justify=tk.LEFT).pack(padx=10, pady=10)
+
+class TaskValuesWindow(tk.Toplevel):
+    def __init__(self, parent, title, values):
+        super().__init__(parent)
+        self.title(title)
+
+        # Встановлення розміру вікна
+        self.geometry("500x300")
+
+        # Додавання текстового віджету
+        text_widget = tk.Text(self, wrap=tk.WORD, width=60, height=10)
+        text_widget.insert(tk.END, values)
+        text_widget.config(state=tk.DISABLED)  # Робимо текстовий віджет "тільки для читання"
+        text_widget.pack(expand=True, fill=tk.BOTH, padx=10, pady=10)
+
+
 class LessonApp:
     def __init__(self, root):
         self.root = root
@@ -117,51 +140,55 @@ class LessonApp:
         self.lab_var.set("Виберіть лабораторну роботу")
         self.lab_menu = ttk.Combobox(root, textvariable=self.lab_var, values=list(self.lab_works.keys()))
         self.lab_menu.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
-        
+
+
         self.code_entry = tk.Text(root, height=10, width=50)
-        self.code_entry.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
-        
+        self.code_entry.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
+
         self.input_entry = tk.Entry(root)
-        self.input_entry.grid(row=2, column=0, padx=10, pady=10, sticky="ew")
-        
+        self.input_entry.grid(row=3, column=0, padx=10, pady=10, sticky="ew")
+
         self.task_var = tk.StringVar()
         self.task_var.set("Виберіть завдання")
         self.task_menu = ttk.Combobox(root, textvariable=self.task_var, state="disabled")
         self.task_menu.grid(row=0, column=1, padx=10, pady=10, sticky="ew")
-        
+
         self.lab_menu.bind("<<ComboboxSelected>>", self.update_tasks)
         self.task_menu.bind("<<ComboboxSelected>>", self.run_selected_task)
-        
+
+        self.rerun_button = tk.Button(root, text="Перезапустити завдання", command=self.rerun_current_task, state=tk.DISABLED)
+        self.rerun_button.grid(row=2, column=1, padx=10, pady=10, sticky="nwe")
+
         self.info_button = tk.Button(root, text="Про завдання", command=self.show_task_info, state=tk.DISABLED)
-        self.info_button.grid(row=1, column=1, padx=10, pady=10, sticky="nwe") 
+        self.info_button.grid(row=2, column=1, padx=10, pady=70, sticky="nwe")
+
+        self.see_values_button = tk.Button(root, text="Показати початкові значення", command=self.show_task_values, state=tk.DISABLED)
+        self.see_values_button.grid(row=2, column=1, padx=10, pady=110, sticky="nwe")
+
+        self.change_values_button = tk.Button(root, text="Змінити значення", command=self.change_initial_values, state=tk.DISABLED)
+        self.change_values_button.grid(row=2, column=1, padx=10, pady=150, sticky="nwe")
 
         self.see_code_button = tk.Button(root, text="Продивитись код програми", command=self.see_code_of_task, state=tk.DISABLED)
-        self.see_code_button.grid(row=1, column=1, padx=10, pady=50, sticky="nwe")
-
-        self.change_values_button = tk.Button(root, text="Змінити початкові значення", command=self.change_initial_values, state=tk.DISABLED)
-        self.change_values_button.grid(row=1, column=1, padx=10, pady=90, sticky="nwe")
+        self.see_code_button.grid(row=2, column=1, padx=10, pady=190, sticky="nwe")
 
         self.show_compressed_button = tk.Button(root, text="Показати скомпресований файл", command=self.show_compressed_file)
-        self.show_compressed_button.grid(row=2, column=1, padx=10, pady=10, sticky="nwe")
+        self.show_compressed_button.grid(row=3, column=1, padx=10, pady=10, sticky="nwe")
         self.hide_button(self.show_compressed_button)
 
         self.show_decompressed_button = tk.Button(root, text="Показати декомпресований файл", command=self.show_decompressed_file)
-        self.show_decompressed_button.grid(row=2, column=0, padx=10, pady=10, sticky="nwe")
+        self.show_decompressed_button.grid(row=3, column=0, padx=10, pady=10, sticky="nwe")
         self.hide_button(self.show_decompressed_button)
-
-        self.current_topic_label = tk.Label(root, font=('Helvetica', 12))
-        self.current_topic_label.grid(row=1, column=0, padx=10, pady=10, sticky="e")
 
         self.current_topic_var = tk.StringVar()
         self.current_topic_var.set("Оберіть лабораторну роботу та завдання")
 
-        self.current_topic_entry = tk.Entry(root, textvariable=self.current_topic_var, state="readonly", font=('Helvetica', 12), width=50)
+        self.current_topic_entry = tk.Entry(root, textvariable=self.current_topic_var, font=('Helvetica', 12), width=80)
         self.current_topic_entry.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
 
-        root.grid_rowconfigure(1, weight=1)
-        root.grid_rowconfigure(2, weight=0)  
+        root.grid_rowconfigure(1, weight=0)
+        root.grid_rowconfigure(2, weight=1)  
         root.grid_columnconfigure(0, weight=1)
-        root.grid_columnconfigure(1, weight=0) 
+        root.grid_columnconfigure(1, weight=1) 
 
 
 
@@ -172,7 +199,9 @@ class LessonApp:
         self.task_menu["values"] = tasks
         self.task_var.set("Виберіть завдання")
         self.info_button.config(state=tk.DISABLED)
+        self.rerun_button.config(state=tk.DISABLED)
         self.change_values_button.config(state=tk.DISABLED)
+        self.see_values_button.config(state=tk.DISABLED)
         self.see_code_button.config(state=tk.DISABLED)
         self.task_menu.config(state="readonly" if tasks else "disabled")
         self.update_current_topic()
@@ -190,9 +219,10 @@ class LessonApp:
 
         if selected_task:
             self.info_button.config(state=tk.NORMAL)
+            self.rerun_button.config(state=tk.NORMAL)
             self.change_values_button.config(state=tk.NORMAL)
+            self.see_values_button.config(state=tk.NORMAL)
             self.see_code_button.config(state=tk.NORMAL)
-            self.show_button(self.current_topic_label)
             self.show_button(self.current_topic_entry)
             self.update_current_topic()
             script_path = self.task_paths[selected_lab][selected_task]
@@ -201,9 +231,10 @@ class LessonApp:
             self.code_entry.insert(tk.END, result)
         else:
             self.info_button.config(state=tk.DISABLED)
+            self.rerun_button.config(state=tk.DISABLED)
             self.change_values_button.config(state=tk.DISABLED)
+            self.see_values_button.config(state=tk.DISABLED)
             self.see_code_button.config(state=tk.DISABLED)
-            self.hide_button(self.current_topic_label)
             self.hide_button(self.current_topic_entry)
             self.code_entry.delete("1.0", tk.END)
 
@@ -221,12 +252,46 @@ class LessonApp:
         except subprocess.CalledProcessError as e:
             return e.output
 
+    def rerun_current_task(self):
+        selected_lab = self.lab_var.get()
+        selected_task = self.task_var.get()
+
+        if selected_task:
+            self.info_button.config(state=tk.NORMAL)
+            self.rerun_button.config(state=tk.NORMAL)
+            self.change_values_button.config(state=tk.NORMAL)
+            self.see_code_button.config(state=tk.NORMAL)
+            self.show_button(self.current_topic_entry)
+            script_path = self.task_paths.get(selected_lab, {}).get(selected_task)
+            result = self.run_script(script_path)
+            self.code_entry.delete("1.0", tk.END)
+            self.code_entry.insert(tk.END, result)
+        else:
+            self.info_button.config(state=tk.DISABLED)
+            self.rerun_button.config(state=tk.DISABLED)
+            self.change_values_button.config(state=tk.DISABLED)
+            self.see_code_button.config(state=tk.DISABLED)
+            self.hide_button(self.current_topic_entry)
+            self.code_entry.delete("1.0", tk.END)
+
     def show_task_info(self):
         selected_lab = self.lab_var.get()
         selected_task = self.task_var.get()
         if selected_task:
             task_info = self.task_conditions.get(selected_lab, {}).get(selected_task, "Немає умови для цього завдання.")
-            messagebox.showinfo(f"Умова для {selected_task}", task_info)
+            info_window = TaskInfoWindow(self.root, title=f"Умова для {selected_task}", message=task_info)
+            info_window.focus_set()
+
+    def show_task_values(self):
+        selected_lab = self.lab_var.get()
+        selected_task = self.task_var.get()
+        if selected_task:
+            values_path = self.task_variables_paths.get(selected_lab, {}).get(selected_task)
+            if values_path:
+                with open(values_path, "r") as file:
+                    values_content = file.read()
+                    values_window = TaskValuesWindow(self.root, title=f"Поточні значення для {selected_task}", values=values_content)
+                    values_window.focus_set()
 
     def change_initial_values(self):
         selected_lab = self.lab_var.get()
