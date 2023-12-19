@@ -1,0 +1,10 @@
+apple:яблуко
+banana:банан
+cherry:вишня
+dog:собака
+elephant:слон
+fish:риба2
+grape:виноград
+horse:кінь
+ice cream:морозиво
+jellyfish:ялинка
