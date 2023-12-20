@@ -23,7 +23,6 @@ class LessonApp:
         self.root = root
         self.root.title("Лабораторні роботи")
 
-        # Встановлення ttkbootstrap теми для всіх ttk елементів
         Style().theme_use('darkly')
         self.lab_works = {
             "Лабораторна робота 1": ["Завдання 1", "Завдання 2"],
